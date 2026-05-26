@@ -9,15 +9,15 @@
 // ============================================================
 
 const REPLACEMENTS = [
-  "Placing a Palm Over His Chest",
-  "Feeling the Soft Earth Receiving My Inadequate Footware",
-  "Relax and Touch the Limitless Space of the Human Heart",
-  "O I see life is not short, but immeasurably long.",
-  "...Lead with Affirmations...Not Apologies or Disclaimers",
-  "Don&#39;t Minimize Your Concerns",
-  "A Body Rises, Reaches an Apex, and then Falls",
-  "The Judge and the Victim Control Our Mind",
-  "...&#39;The Change Will be Very Significant,&#39;...",
+  "Placing A Palm Over His Chest",
+  "Feeling The Soft Earth Receiving My Inadequate Footware",
+  "Relax And Touch The Limitless Space Of The Human Heart",
+  "O I See Life Is Not Short, But Immeasurably Long.",
+  "...Lead With Affirmations...Not Apologies Or Disclaimers",
+  "Don't Minimize Your Concerns",
+  "A Body Rises, Reaches an Apex, And Then Falls",
+  "The Judge And The Victim Control Our Mind",
+  "...'The Change Will Be Very Significant'...",
   "Fear Destroys Curiosity and Playfulness "
   // add things as needed using format: "x", 
 ];
@@ -49,11 +49,12 @@ const NO_REPEATS = false;
 const CUSTOM_STYLE_ENABLED = true;
 
 const CUSTOM_STYLE = `
-  color: #b0b0b0;
+  color: #ed08d6;
   font-style: italic;
   font-weight: 400;
   font-size: inherit;
-  font-family: inherit;
+  font-family: cursive;
+  font-size: 1.25rem;
   letter-spacing: 0.03em;
 `;
 
