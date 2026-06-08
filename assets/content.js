@@ -22,17 +22,55 @@
 //  CONFIG: REPLACE HEADINGS
 // ================================================================
 
+// commenting out The Amazons to make The Facebooks
+// The Amazons
+// const REPLACEMENTS = [
+//   "Placing A Palm Over His Chest",
+//   "Feeling The Soft Earth Receiving My Inadequate Footware",
+//   "Relax And Touch The Limitless Space Of The Human Heart",
+//   "O I See Life Is Not Short, But Immeasurably Long.",
+//   "...Lead With Affirmations...Not Apologies Or Disclaimers",
+//   "Don't Minimize Your Concerns",
+//   "A Body Rises, Reaches an Apex, And Then Falls",
+//   "The Judge And The Victim Control Our Mind",
+//   "...'The Change Will Be Very Significant'...",
+//   "Fear Destroys Curiosity and Playfulness "
+//   // add things as needed using format: "phrase", 
+// ];
+
+//The Facebooks
 const REPLACEMENTS = [
-  "Placing A Palm Over His Chest",
-  "Feeling The Soft Earth Receiving My Inadequate Footware",
-  "Relax And Touch The Limitless Space Of The Human Heart",
-  "O I See Life Is Not Short, But Immeasurably Long.",
-  "...Lead With Affirmations...Not Apologies Or Disclaimers",
-  "Don't Minimize Your Concerns",
-  "A Body Rises, Reaches an Apex, And Then Falls",
-  "The Judge And The Victim Control Our Mind",
-  "...'The Change Will Be Very Significant'...",
-  "Fear Destroys Curiosity and Playfulness "
+  "The user appears on the network",
+  "The user has inherited this particular computer...from a neighbor who has upgraded his own PC and offered not only to give this one away for free but also to set it up and tutor the user in its basic operations.",
+  "The EdgeRank algorithm that first identifies and catalogs the user does not know this information",
+  "At first, the only data the algorithm possesses are the answers to two prompts that are the only prompts the user responds to: Name...and Interests,",
+  "He is the kind of seventy-year-old first-time computer user who will forever misunderstand the notion of a URL",
+  "[he] will instead go to a search engine like Yahoo and type www.facebook.com into its search bar and then click on the top search result, believing that this is the only way to go anywhere on the internet, via an intermediary",
+  "like the community rural phone lines he grew up with, where you picked up the phone and had to ask the real-life operator to please place and connect your call",
+  "He has such a strong negative suspicion about the intangible and ethereal digital internet that it makes him believe his emails are no more real and lasting than a wisp of smoke that disappears in the wind",
+  "He insists, despite others trying to explain to him how networks operate, that he can get to his email and Facebook account only from this one yellowing Dell computer that has found a home on his kitchen table",
+  "He finds it so disconcerting to receive emailed advertising or spam",
+    "...especially those ads that are addressed to him by name",
+    "which often send him searching for a relevant phone number and he’ll call the company responsible for the advertising and accost the poor customer service rep on the other end of the line",
+    "HOW DO YOU KNOW MY NAME?",
+  "WHERE DID YOU GET MY EMAIL ADDRESS?",
+  "WHO ARE YOU?",
+  "He gets an error message saying “This program has performed an illegal operation",
+  "he genuinely thinks that he himself has accidentally committed a crime...",
+  "...after which he never returns to that website again", 
+  "He is the kind of user who operates a computer intuitively, but his intuitions are all fundamentally off",
+  "This is made even more difficult and confusing when the many flashing toolbars and icons slowly begin to colonize the screen",
+  "...being the result of certain mouse-clicks on certain pop-up ads that declare Your computer is infected with viruses!",
+  "Download this anti-viral software immediately!!! Which he always does",
+  "Every time",
+  "Yet the weird flashing stuff on his computer keeps on spreading",
+  "Then the interface gets even more baffling",
+  "...due to an unlikely series of events that no programmer or beta tester could ever possibly foresee or prevent",
+  "Lawrence somehow takes a screenshot of his desktop and then accidentally and unknowingly makes that picture his desktop’s background",
+  "...creates this weird doubling effect",
+  "Where every chaotic icon that appears on his computer seems to have suddenly cloned itself",
+  "Some of these icons remaining clickable and movable...",
+  "The relatively friendly- and relaxed-looking Facebook home page is a welcome relief and respite, which is why he ends up going there quite a lot"
   // add things as needed using format: "phrase", 
 ];
 
