@@ -38,7 +38,7 @@
 //   // add things as needed using format: "phrase", 
 // ];
 
-//The Facebooks
+//The Facebooks, excerpts from Nathan Hill, Wellness, 2023
 const REPLACEMENTS = [
   "The user appears on the network",
   "The user has inherited this particular computer...from a neighbor who has upgraded his own PC and offered not only to give this one away for free but also to set it up and tutor the user in its basic operations.",
