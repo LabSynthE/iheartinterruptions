@@ -17,21 +17,50 @@
 //  - fix lag on node overload
 // ============================================================
 
+//=============================================================
+//Load Google Web Font
+//=============================================================
+
+// 1. Create the link element
+const link = document.createElement('link');
+
+// 2. Set the attributes for the Google Font stylesheet
+link.rel = 'stylesheet';
+link.href = 'https://googleapis.com';
+
+// 3. Append the link tag to the HTML head
+document.head.appendChild(link);
+
+// 4. Apply the font family to your elements via JS
+document.body.style.fontFamily = "'Gochi Hand', cursive";
+
+// ================================================================
+//  ONLY RUN EXT IF CURRENT URL IS AMAZON.COM
+// ================================================================
+
+if (window.location.hostname.includes("amazon.com")) {
+  // Run on page-load
+  processHeadings(document.body);
+  walkAndProcessWords(document.body);
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+ 
+ 
 
 // ================================================================
 //  CONFIG: REPLACE HEADINGS
 // ================================================================
 
 const HEADING_PHRASES = [
-  "Placing a Palm Over His Chest",
+  //"Placing a Palm Over His Chest",
   "Feeling the Soft Earth Receiving My Inadequate Footwear",
   "Relax and Touch the Limitless Space of the Human Heart",
   "O I see life is not short, but immeasurably long.",
   "Lead with Affirmations, Not Apologies or Disclaimers",
-  "Don’t Minimize Your Concerns",
+  //"Don’t Minimize Your Concerns",
   "A Body Rises, Reaches an Apex, and then Falls",
   "The Judge and the Victim Control Our Mind",
-  "The Change Will be Very Significant",
+  //"The Change Will be Very Significant",
   "Fear Destroys Curiosity and Playfulness"
 ];
 
@@ -47,7 +76,7 @@ const WORD_REMINDERS = [
   {
     find: "anxiety",
     reminders: [
-      "· Don’t Minimize Your Concerns",
+   //   "· Don’t Minimize Your Concerns",
       "· Relax and Touch the Limitless Space of the Human Heart",
       "· Fear Destroys Curiosity and Playfulness"
     ]
@@ -56,7 +85,7 @@ const WORD_REMINDERS = [
     find: "stress",
     reminders: [
       "· Placing a Palm Over His Chest",
-      "· Relax and Touch the Limitless Space of the Human Heart",
+    //  "· Relax and Touch the Limitless Space of the Human Heart",
       "· Fear Destroys Curiosity and Playfulness"
     ]
   },
@@ -189,7 +218,12 @@ const HEADING_STYLE = `
   font-weight: normal !important;
   letter-spacing: 0.02em !important;
   text-transform: none !important;
-  color: inherit;
+  background-color: #a832a8;
+  color: #194f20;
+  color: #fffdde;
+  padding: .75em;
+  margin: .25em;
+  transform: rotate (-10deg);
 `;
 
 // ============================================================
