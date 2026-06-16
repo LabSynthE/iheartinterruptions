@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "remember body",
+  "version": "1.2",
+  "description": "Replace H1, H2, H3 header w/pre-determined list",
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

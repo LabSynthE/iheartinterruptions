@@ -22,21 +22,6 @@
 //  CONFIG: REPLACE HEADINGS
 // ================================================================
 
-// commenting out The Amazons to make The Facebooks
-// The Amazons
-// const REPLACEMENTS = [
-//   "Placing A Palm Over His Chest",
-//   "Feeling The Soft Earth Receiving My Inadequate Footware",
-//   "Relax And Touch The Limitless Space Of The Human Heart",
-//   "O I See Life Is Not Short, But Immeasurably Long.",
-//   "...Lead With Affirmations...Not Apologies Or Disclaimers",
-//   "Don't Minimize Your Concerns",
-//   "A Body Rises, Reaches an Apex, And Then Falls",
-//   "The Judge And The Victim Control Our Mind",
-//   "...'The Change Will Be Very Significant'...",
-//   "Fear Destroys Curiosity and Playfulness "
-//   // add things as needed using format: "phrase", 
-// ];
 
 //The Facebooks, excerpts from Nathan Hill, Wellness, 2023
 const REPLACEMENTS = [
