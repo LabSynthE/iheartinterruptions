@@ -1,57 +1,153 @@
 // ============================================================
-//  
-//  iHeartInterruptions v2
-//  
-//  In sequence:
-//  1) Replaces H1, H2, and H3 elements on any page;
-//     replaces full text with a random pick from list.
-//  2) Locates & appends reminders after individual words
-//  
-//  UPDATES:
-//  
+//  theAmazons v2.1
+//
+//  Reads & replaces H1, H2, H3, and H4 on page at variable frequency
+//  Reads & replaces targeted words on page at variable frequency
+//    
+//  06.26.2026  fix logic for styling and link preservation (ks)
 //  05.26.2026  fix mutation loop lockup (ks)
 //  05.26.2026  combine header replacement + individual word replacement (ks)
 //  05.26.2026  add replacements text (xb)
-//  
-//  To do:
-//  - fix lag on node overload
+//
 // ============================================================
 
-//=============================================================
-//Load Google Web Font
-//=============================================================
 
-// 1. Create the link element
-const link = document.createElement('link');
+// ============================================================
+// CONFIGURE STYLES HERE
+// ============================================================
 
-// 2. Set the attributes for the Google Font stylesheet
-link.rel = 'stylesheet';
-link.href = 'https://googleapis.com';
+const STYLE_SYSTEM = {
+  enabled: true,
+  fontFamily: "'Gochi Hand', cursive",
 
-// 3. Append the link tag to the HTML head
-document.head.appendChild(link);
+  fonts: {
+    base: false,
+    heading: true,
+    reminder: true,
+    link: false
+  },
 
-// 4. Apply the font family to your elements via JS
-document.body.style.fontFamily = "'Gochi Hand', cursive";
+  roles: {
+    base: {},
 
-// ================================================================
-//  ONLY RUN EXT IF CURRENT URL IS AMAZON.COM
-// ================================================================
+    heading: {
+      color: "#a832a8",
+      italic: true,
+      size: "1.25rem"
+    },
 
-if (window.location.hostname.includes("amazon.com")) {
-  // Run on page-load
-  processHeadings(document.body);
-  walkAndProcessWords(document.body);
-  observer.observe(document.body, { childList: true, subtree: true });
+    reminder: {
+      color: "#a832a8",
+      italic: true,
+      size: "0.9em",
+      opacity: 0.9
+    },
+
+    link: {
+      color: "#4affa8",
+      italic: false,
+      size: "0.95em",
+      opacity: 1,
+      underline: true
+    }
+  }
+};
+
+
+// ============================================================
+// FONT LOADER
+// ============================================================
+
+    /* you can swap out the google font you are calling via link.href */
+
+function injectFont() {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href =
+    "https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap";
+  document.head.appendChild(link);
 }
- 
- 
 
-// ================================================================
-//  CONFIG: REPLACE HEADINGS
-// ================================================================
 
-const HEADING_PHRASES = [
+// ============================================================
+// ROLE STYLE HANDLER
+// ============================================================
+
+function injectRoleStyles() {
+  if (!STYLE_SYSTEM.enabled) return;
+
+  const r = STYLE_SYSTEM.roles;
+  const f = STYLE_SYSTEM.fonts;
+  const font = STYLE_SYSTEM.fontFamily;
+
+  const style = document.createElement("style");
+
+  style.textContent = `
+    ${f.base ? `
+      body,
+      button,
+      input,
+      textarea,
+      select,
+      optgroup,
+      p,
+      h1,h2,h3,h4,h5,h6,
+      span,
+      a {
+        font-family: ${font} !important;
+      }
+    ` : ""}
+
+    .role-heading {
+      ${f.heading ? `font-family: ${font};` : ""}
+      color: ${r.heading.color};
+      font-style: ${r.heading.italic ? "italic" : "normal"};
+      font-size: ${r.heading.size};
+      display: inline-block;
+      padding: .75em;
+      margin: .25em;
+    }
+
+    .role-reminder {
+      ${f.reminder ? `font-family: ${font};` : ""}
+      color: ${r.reminder.color};
+      font-style: ${r.reminder.italic ? "italic" : "normal"};
+      font-size: ${r.reminder.size};
+      opacity: ${r.reminder.opacity};
+      margin-left: 5px;
+    }
+
+    ${f.link ? `
+      a.role-link,
+      a.role-link:visited,
+      a.role-link:hover,
+      a.role-link:active {
+        color: ${r.link.color} !important;
+        font-style: ${r.link.italic ? "italic" : "normal"} !important;
+        font-size: ${r.link.size};
+        opacity: ${r.link.opacity};
+        text-decoration: ${r.link.underline ? "underline" : "none"};
+        ${f.link ? `font-family: ${font};` : ""}
+      }
+    ` : `
+      a.role-link {
+        all: unset;
+        cursor: pointer;
+      }
+    `}
+  `;
+
+  document.head.appendChild(style);
+}
+
+
+// ============================================================
+// CONFIGURE WORDS HERE
+// ============================================================
+
+    /* These are the Header Replacements */
+
+const REPLACEMENTS = [
   //"Placing a Palm Over His Chest",
   "Feeling the Soft Earth Receiving My Inadequate Footwear",
   "Relax and Touch the Limitless Space of the Human Heart",
@@ -64,7 +160,9 @@ const HEADING_PHRASES = [
   "Fear Destroys Curiosity and Playfulness"
 ];
 
-const WORD_REMINDERS = [
+    /* These are the Header Replacements */
+
+const REMINDERS = [
   {
     find: "urgent",
     reminders: [
@@ -174,60 +272,24 @@ const WORD_REMINDERS = [
   }
 ];
 
-// Pre-compile regular expressions once to avoid massive CPU spikes
-const COMPILED_REMINDERS = WORD_REMINDERS.map(entry => {
-  const escaped = entry.find.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return {
-    ...entry,
-    regex: new RegExp(`(${escaped})`, "gi")
-  };
-});
 
 // ============================================================
-//  Flags
+// FLAGS
 // ============================================================
 
-// true = stop inserting reminders when all options shown
-// false = reminders get reshuffled and reused
-const NO_REPEATS = false; 
+const HS_ENABLED = true;      // Process Headings
+const HS_SKIP_ENABLED = true; // Control Frequency
+const HS_MAX_SKIPS = 3;       // Higher = less frequent
+const HS_NO_REPEATS = false;  // Don't Repeat Phrases?
 
-// true = random skips # word before responding. (stops overcrowding)
-const SKIP_ENABLED = true;
+const RW_ENABLED = true;      // Process Individual Words?
+const RW_SKIP_ENABLED = false; // Control Frequency?
+const RW_MAX_SKIPS = 3;       // Higher = less frequent
+const RW_NO_REPEATS = false;   // Don't Repeat Phrases
 
-// Higher = more lower incidence. 0 = respond every time
-const MAX_SKIPS = 3;
-
-// ============================================================
-//  Styles
-// ============================================================
-
-const REMINDER_STYLE = `
-  color: #9e9e9e;
-  font-style: italic;
-  font-size: 0.9em;
-  margin-left: 5px;
-  font-weight: normal;
-  font-family: inherit;
-  letter-spacing: 0.01em;
-`;
-
-// Poetic takeover styles for headings
-const HEADING_STYLE = `
-  font-family: Georgia, serif !important;
-  font-style: italic !important;
-  font-weight: normal !important;
-  letter-spacing: 0.02em !important;
-  text-transform: none !important;
-  background-color: #a832a8;
-  color: #194f20;
-  color: #fffdde;
-  padding: .75em;
-  margin: .25em;
-  transform: rotate (-10deg);
-`;
 
 // ============================================================
-//  State & Shuffling Utilities
+// STATE
 // ============================================================
 
 function shuffle(arr) {
@@ -238,141 +300,128 @@ function shuffle(arr) {
   return arr;
 }
 
-// Global heading state
-let headingPool = shuffle([...HEADING_PHRASES]);
 
-function getNextHeadingPhrase() {
-  if (headingPool.length === 0) {
-    if (NO_REPEATS) return null; // Stop replacing headings if no repeats allowed
-    headingPool = shuffle([...HEADING_PHRASES]);
+// Heading state
+let hsPool = shuffle([...REPLACEMENTS]);
+let hsSkipCount = 0;
+const hsReplaced = new WeakSet();
+
+// Individual Word state
+const wrWordState = new Map();
+const wrProcessed = new WeakSet();
+
+
+// ============================================================
+// PROCESS HEADINGS
+// ============================================================
+
+function hsNextReplacement() {
+  if (!HS_ENABLED) return null;
+
+  if (HS_SKIP_ENABLED && hsSkipCount > 0) {
+    hsSkipCount--;
+    return null;
   }
-  return headingPool.pop();
+
+  if (hsPool.length === 0) {
+    if (HS_NO_REPEATS) return null;
+    hsPool = shuffle([...REPLACEMENTS]);
+  }
+
+  const text = hsPool.pop();
+
+  if (HS_SKIP_ENABLED) {
+    hsSkipCount = Math.floor(Math.random() * (HS_MAX_SKIPS + 1));
+  }
+
+  return text;
 }
 
-// Track state per word
-const wordState = new Map();
+function replaceHeading(el) {
+  if (hsReplaced.has(el)) return;
+  hsReplaced.add(el);
 
-function getWordState(entry) {
-  if (!wordState.has(entry.find)) {
-    wordState.set(entry.find, {
+  const text = hsNextReplacement();
+  if (!text) return;
+
+  el.textContent = "";
+
+  const span = document.createElement("span");
+  span.className = "role-heading";
+  span.textContent = text;
+
+  el.appendChild(span);
+}
+
+function processHeadings(root) {
+  const headings = root.querySelectorAll?.("h1, h2, h3, h4") || [];
+  headings.forEach(replaceHeading);
+}
+
+
+// ============================================================
+// PROCESS INDIVIDUAL WORDS
+// ============================================================
+
+const RW_SKIP_TAGS = new Set([
+  "SCRIPT","STYLE","NOSCRIPT","TEXTAREA","INPUT",
+  "SELECT", "BUTTON","CODE","PRE","HEAD","META","TITLE"
+]);     // Can experiment with commenting out 'button'
+
+const COMPILED_REMINDERS = REMINDERS.map(entry => ({
+  ...entry,
+  regex: new RegExp(
+    `(${entry.find.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&")})`,
+    "gi"
+  )
+}));
+
+function wrGetState(entry) {
+  if (!wrWordState.has(entry.find)) {
+    wrWordState.set(entry.find, {
       pool: shuffle([...entry.reminders]),
-      skipCount: 0,
+      skipCount: 0
     });
   }
-  return wordState.get(entry.find);
+  return wrWordState.get(entry.find);
 }
 
-// return next reminder for entry, null if skipping or out.
-function nextReminder(entry) {
-  const state = getWordState(entry);
+function wrNextReminder(entry) {
+  const state = wrGetState(entry);
 
-  // skipping
-  if (SKIP_ENABLED && state.skipCount > 0) {
+  if (RW_SKIP_ENABLED && state.skipCount > 0) {
     state.skipCount--;
     return null;
   }
 
-  // pool out
   if (state.pool.length === 0) {
-    if (NO_REPEATS) return null; // stop responding
-    state.pool = shuffle([...entry.reminders]); // refill & reshuffle
+    if (RW_NO_REPEATS) return null;
+    state.pool = shuffle([...entry.reminders]);
   }
 
   const reminder = state.pool.pop();
 
-  // set a new random skip count for round
-  if (SKIP_ENABLED) {
-    state.skipCount = Math.floor(Math.random() * (MAX_SKIPS + 1));
+  if (RW_SKIP_ENABLED) {
+    state.skipCount = Math.floor(Math.random() * (RW_MAX_SKIPS + 1));
   }
 
   return reminder;
 }
 
-// ============================================================
-//  Pass 1: Heading Processing
-// ============================================================
-
-// Helper to create styled replacement text without destroying the wrapper
-function makeStyledSpan(text) {
-  const span = document.createElement("span");
-  span.className = "body-heading-replacement";
-  span.setAttribute("style", HEADING_STYLE);
-  span.textContent = text;
-  return span;
-}
-
-function processHeadings(rootNode) {
-  // If the root node itself is a heading, process it directly, otherwise query inside it.
-  const headings = [];
-  if (rootNode.nodeType === Node.ELEMENT_NODE) {
-    if (["H1", "H2", "H3"].includes(rootNode.tagName.toUpperCase())) {
-      headings.push(rootNode);
-    }
-    const found = rootNode.querySelectorAll("h1, h2, h3");
-    headings.push(...Array.from(found));
-  }
-
-  for (const heading of headings) {
-    // Avoid re-processing
-    if (heading.dataset.headingProcessed) continue;
-    heading.dataset.headingProcessed = "true";
-
-    const phrase = getNextHeadingPhrase();
-    if (!phrase) continue; 
-
-    // Determine the exact element where we will place the new text.
-    const innerLink = heading.querySelector("a");
-    const outerLink = heading.closest("a");
-
-    let targetEl;
-
-    if (innerLink) {
-      // CASE 1: Heading contains an inner link (e.g., <h2><a href="...">Deals</a></h2>)
-      // We target the inner anchor so we preserve the link.
-      targetEl = innerLink;
-    } else {
-      // CASE 2: Heading is inside an outer link (e.g., <a href="..."><h2>Deals</h2></a>)
-      // CASE 3: Heading has no link (e.g., <h2>Deals</h2>)
-      // For both cases, we target the heading itself. 
-      // If there is an outer link, it wraps the heading and won't be harmed.
-      targetEl = heading;
-    }
-
-    // Safely remove the child nodes of the target (text nodes, images, etc.)
-    // without destroying the actual anchor tag or heading element itself.
-    while (targetEl.firstChild) {
-      targetEl.removeChild(targetEl.firstChild);
-    }
-
-    // Append the newly styled poetic phrase safely
-    targetEl.appendChild(makeStyledSpan(phrase));
-  }
-}
-
-// ============================================================
-//  Pass 2: Word Processing
-// ============================================================
-
-// Include H1, H2, H3 in skip tags so we don't double-process the poetic replacements!
-const SKIP_TAGS = new Set([
-  "SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "INPUT",
-  "SELECT", "BUTTON", "CODE", "PRE", "HEAD", "META", "TITLE",
-  "H1", "H2", "H3"
-]);
-
-const processed = new WeakSet();
-
 function processTextNode(textNode) {
-  if (processed.has(textNode)) return;
+  if (!RW_ENABLED) return;
+  if (wrProcessed.has(textNode)) return;
 
   const parent = textNode.parentNode;
-  
-  // Ensure tagName handles SVG/XML node cases gracefully using toUpperCase()
-  if (!parent || SKIP_TAGS.has(parent.tagName?.toUpperCase())) return;
-  if (parent.dataset && parent.dataset.bodyReminder) return;
+  if (!parent) return;
+
+  if (RW_SKIP_TAGS.has(parent.tagName)) return;
+  if (parent.closest && parent.closest("a")) return;
+
+  wrProcessed.add(textNode);
 
   let remaining = textNode.nodeValue;
-  if (!remaining) return; // Safeguard against null/empty nodes
+  if (!remaining) return;
 
   let matched = false;
   const fragment = document.createDocumentFragment();
@@ -382,103 +431,103 @@ function processTextNode(textNode) {
     let earliestEntry = null;
 
     for (const entry of COMPILED_REMINDERS) {
-      entry.regex.lastIndex = 0; // reset regex state
+      entry.regex.lastIndex = 0;
       const match = entry.regex.exec(remaining);
-      if (match && (earliest === null || match.index < earliest.index)) {
+
+      if (match && (!earliest || match.index < earliest.index)) {
         earliest = match;
         earliestEntry = entry;
       }
     }
 
     if (!earliest) {
-      // Mark the leftover text node as processed
-      const leftoverNode = document.createTextNode(remaining);
-      processed.add(leftoverNode);
-      fragment.appendChild(leftoverNode);
+      fragment.appendChild(document.createTextNode(remaining));
       break;
     }
 
     matched = true;
 
-    // text before the match
     if (earliest.index > 0) {
-      const beforeNode = document.createTextNode(remaining.slice(0, earliest.index));
-      processed.add(beforeNode);
-      fragment.appendChild(beforeNode);
+      fragment.appendChild(
+        document.createTextNode(remaining.slice(0, earliest.index))
+      );
     }
 
-    // matched word (always kept)
-    const matchNode = document.createTextNode(earliest[0]);
-    processed.add(matchNode);
-    fragment.appendChild(matchNode);
+    fragment.appendChild(document.createTextNode(earliest[0]));
 
-    // get a reminder (null if skipping or done)
-    const reminder = nextReminder(earliestEntry);
+    const reminder = wrNextReminder(earliestEntry);
+
     if (reminder) {
       const span = document.createElement("span");
-      span.setAttribute("style", REMINDER_STYLE);
-      span.dataset.bodyReminder = "true";
+      span.className = "role-reminder";
       span.textContent = reminder;
       fragment.appendChild(span);
     }
 
-    remaining = remaining.slice(earliest.index + earliest[0].length);
+    remaining = remaining.slice(
+      earliest.index + earliest[0].length
+    );
   }
 
   if (matched) {
-    processed.add(textNode);
     parent.replaceChild(fragment, textNode);
-  } else {
-    processed.add(textNode);
   }
 }
 
-function walkAndProcessWords(root) {
+
+// ============================================================
+// HANDLER: IGNORE OR INCLUDE LINKS
+// ============================================================
+
+function processLinks(root) {
+  if (!STYLE_SYSTEM.fonts.link) return;
+
+  const links = root.querySelectorAll?.("a") || [];
+
+  links.forEach(a => {
+    if (a.dataset.linkProcessed) return;
+    a.dataset.linkProcessed = "true";
+    a.classList.add("role-link");
+  });
+}
+
+
+// ============================================================
+// TREE WALKER
+// ============================================================
+
+function processTextNodes(root) {
   const walker = document.createTreeWalker(
     root,
     NodeFilter.SHOW_TEXT,
     {
       acceptNode(node) {
-        if (SKIP_TAGS.has(node.parentNode?.tagName?.toUpperCase())) return NodeFilter.FILTER_REJECT;
-        if (node.parentNode?.dataset?.bodyReminder) return NodeFilter.FILTER_REJECT;
+        if (RW_SKIP_TAGS.has(node.parentNode?.tagName)) {
+          return NodeFilter.FILTER_REJECT;
+        }
         return NodeFilter.FILTER_ACCEPT;
       }
     }
   );
 
-  const nodes = [];
   let node;
-  while ((node = walker.nextNode())) nodes.push(node);
-  nodes.forEach(processTextNode);
+  while ((node = walker.nextNode())) {
+    processTextNode(node);
+  }
 }
 
+
 // ============================================================
-//  Execution & Dynamic Handling
+// RUN
 // ============================================================
 
-// Catch dynamic / lazy-loaded content
-const observer = new MutationObserver((mutations) => {
-  // Disconnect observer during processing to guarantee we don't trigger 
-  // infinite loops via our own DOM node changes.
-  observer.disconnect();
+function run(root) {
+  injectFont();
+  injectRoleStyles();
 
-  for (const mutation of mutations) {
-    for (const added of mutation.addedNodes) {
-      if (added.nodeType === Node.ELEMENT_NODE) {
-        // Run headings on element first, then words
-        processHeadings(added);
-        walkAndProcessWords(added);
-      } else if (added.nodeType === Node.TEXT_NODE) {
-        processTextNode(added);
-      }
-    }
-  }
+  processLinks(root);
+  processHeadings(root);
+  processTextNodes(root);
+}
 
-  // Reconnect observer after all updates are finished.
-  observer.observe(document.body, { childList: true, subtree: true });
-});
-
-// Run on page-load
-processHeadings(document.body);
-walkAndProcessWords(document.body);
-observer.observe(document.body, { childList: true, subtree: true });
+run(document.body);
