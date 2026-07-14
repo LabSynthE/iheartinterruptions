@@ -150,16 +150,35 @@ function injectRoleStyles() {
     /* These are the Header Replacements */
 
 const REPLACEMENTS = [
-  //"Placing a Palm Over His Chest",
-  "Feeling the Soft Earth Receiving My Inadequate Footwear",
-  "Relax and Touch the Limitless Space of the Human Heart",
-  "O I see life is not short, but immeasurably long.",
-  "Lead with Affirmations, Not Apologies or Disclaimers",
-  //"Don't Minimize Your Concerns",
-  "A Body Rises, Reaches an Apex, and then Falls",
-  "The Judge and the Victim Control Our Mind",
-  //"The Change Will be Very Significant",
-  "Fear Destroys Curiosity and Playfulness"
+"Arturo Cova, protagonist of The Vortex, is a player, skilled in the manly arts of deceitful seduction. And he is a poet,...",
+"Mostly, though, Arturo Cova is a fulsome fictional exemplar of a sort of masculinity (think Don Juan Tenorio, think Tale of Genji) focused on amorous conquest.",
+"...the young elite man of letters",
+"contains sensational denunciations of conditions suffered",
+"Colombian rubber tappers in Brazil and Peru",
+"well-defined Latin American social type",
+"a life of bohemian leisure in the capital city, Bogotá",
+"playing around",
+"requiring little actual labor",
+"perhaps invest in a profitable business venture",
+"contribute to the modernization of [your] country",
+"meantime, he basks in the modest prestige",
+"his slender volume of poetry",
+"An interest in poetry",
+"students of his generation",
+"elite males with the wit for it",
+"elite males “inscribed” the Latin American countryside",
+"one of the most famous Latin American novels of the twentieth century",
+"Across the hemisphere",
+"culminated a century-long process of literary nation building",
+"in the 1970s, The Vortex was its fourth title, of more than a hundred",
+"early twentieth-century rubber boom in Amazonia as a whole",
+"the rubber boom",
+"a government commission tasked to clarify the Venezuelan-Colombian border",
+"Rivera’s brush with the rainforest was thus limited but real",
+"He died suddenly",
+"while on a visit to New York",
+"arranging for the English translation",
+"has been re-created in full"
 ];
 
     /* These are the Header Replacements */
@@ -168,112 +187,131 @@ const REMINDERS = [
   {
     find: "urgent",
     reminders: [
-      "· Placing a Palm Over His Chest",
-      "· Don't Minimize Your Concerns",
-      "· The Change Will be Very Significant"
+      "has vanished forever in the rainforest",
+      "a key aspect of their prestige",
+      "regions remote",
+      "wide appeal",
+      "English translations of Latin American fiction were incalculably rare"
     ]
   },
   {
     find: "anxiety",
     reminders: [
-   //   "· Don't Minimize Your Concerns",
-      "· Relax and Touch the Limitless Space of the Human Heart",
-      "· Fear Destroys Curiosity and Playfulness"
+   //   "· Don’t Minimize Your Concerns",
+    "you will lose the plot"
     ]
   },
   {
     find: "stress",
     reminders: [
-      "· Placing a Palm Over His Chest",
-    //  "· Relax and Touch the Limitless Space of the Human Heart",
-      "· Fear Destroys Curiosity and Playfulness"
+    "Try to skim it"
     ]
   },
   {
     find: "deals",
     reminders: [
-      "· The Judge and the Victim Control Our Mind",
-      "· The Change Will be Very Significant",
-      "· You've Been Onto Something"
+      "Mastery of literary language",
+      "writing it into national life",
+      "appropriating it for their own, urban purposes",
+      "sophisticated capital cities",
+      "wide appeal",
+      "action-packed plot",
+      "the sensational human rights abuses",
+      "highly relevant"
     ]
   },
   {
     find: "deal",
     reminders: [
-      "· The Judge and the Victim Control Our Mind",
-      "· The Change Will be Very Significant"
+      "action-packed plot",
+      "the sensational human rights abuses",
+      "highly relevant"
     ]
   },
   {
     find: "fast",
     reminders: [
-      "· A Body Rises, Reaches an Apex, and then Falls",
-      "· O I see life is not short, but immeasurably long."
+    "Rivera’s brush with the rainforest was thus limited but real",
+    "He died suddenly"
     ]
   },
   {
     find: "recommended",
     reminders: [
-      "· Placing a Palm Over His Chest",
-      "· Relax and Touch the Limitless Space of the Human Heart"
+    "g[i]ve new meaning to the word “florid”",
+    "a conventional chapter structure",
+    "preserve more of the unconventional edginess",
+    "the naturalness of his dialogue",
+    "dialing back the floridness of his purple patches"
     ]
   },
   {
     find: "customer",
     reminders: [
-      "· Fear Destroys Curiosity and Playfulness",
-      "· Don't Minimize Your Concerns"
+    "markedly an urban person",
+    "a serial seducer",
+    "“deflowerer” of girls",
+    "By the end, his trials and tribulations have clearly made him a better person"
     ]
   },
   {
     find: "reviews",
     reminders: [
-      "· The Judge and the Victim Control Our Mind",
-      "· Don't Minimize Your Concerns"
+    "a well-received book of poetry",
+    "he inspired to infuse his prose",
+    "a poetic language and sensibility",
+    "Early drafts",
+    "Rivera loved rarefied vocabulary",
+    "1970s, I found the novel very heavy going",
+    "It sent me to the dictionary",
+    "the novel’s mood, attitude, action, description, and characterization"
     ]
   },
   {
     find: "ratings",
     reminders: [
-      "· The Judge and the Victim Control Our Mind",
-      "· Don't Minimize Your Concerns"
+    "Nothing else will do",
+    "every detail matters",
+    "Try to skim it",
+    "you will lose the plot"
     ]
   },
   {
     find: "stars",
     reminders: [
-      "· The Judge and the Victim Control Our Mind"
+      "Don’t expect to like him at the beginning, or perhaps, ever—",
+      "this is the bulk of The Vortex",
+      "By the end, his trials and tribulations have clearly made him a better person",
+      "Still, I rather enjoyed knowing from the outset that he is to be devoured by the jungle"
     ]
   },
   {
     find: "buy now",
     reminders: [
-      "· The Change Will be Very Significant",
-      "· Don't Minimize Your Concerns"
+    "gain government employment",
+    "Literary pretentions proliferated"
     ]
   },
   {
     find: "add to cart",
     reminders: [
-      "· Feeling the Soft Earth Receiving My Inadequate Footwear"
+    "writing it into national life",
+    "appropriating it for their own, urban purposes"
     ]
   },
   {
     find: "save",
     reminders: [
-      "· Relax and Touch the Limitless Space of the Human Heart",
-      "· Don't Minimize Your Concerns"
+    "lurid depictions of the “jungle”"
     ]
   },
   {
     find: "limited",
     reminders: [
-      "· Don't Minimize Your Concerns",
-      "· The Change Will be Very Significant"
+    "has vanished forever in the rainforest"
     ]
   }
 ];
-
 
 // ============================================================
 // FLAGS
