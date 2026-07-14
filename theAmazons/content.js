@@ -590,3 +590,26 @@ function run(root) {
 }
 
 run(document.body);
+// ============================================================
+// MUTATION OBSERVER
+// ============================================================
+
+const observer = new MutationObserver((mutations) => {
+  observer.disconnect();
+
+  for (const mutation of mutations) {
+    for (const added of mutation.addedNodes) {
+      if (added.nodeType === Node.ELEMENT_NODE) {
+        processLinks(added);
+        processHeadings(added);
+        processTextNodes(added);
+      } else if (added.nodeType === Node.TEXT_NODE) {
+        processTextNode(added);
+      }
+    }
+  }
+
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
