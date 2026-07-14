@@ -4,6 +4,7 @@
 //  Reads & replaces H1, H2, H3, and H4 on page at variable frequency
 //  Reads & replaces targeted words on page at variable frequency
 //    
+//  06.23.2026  add logo replacement and percentage fix (ha)
 //  06.26.2026  fix logic for styling and link preservation (ks)
 //  05.26.2026  fix mutation loop lockup (ks)
 //  05.26.2026  combine header replacement + individual word replacement (ks)
@@ -149,74 +150,16 @@ function injectRoleStyles() {
     /* These are the Header Replacements */
 
 const REPLACEMENTS = [
-"Arturo Cova, protagonist of The Vortex, is a player, skilled in the manly arts of deceitful seduction. And he is a poet,...",
-"Mostly, though, Arturo Cova is a fulsome fictional exemplar of a sort of masculinity (think Don Juan Tenorio, think Tale of Genji) focused on amorous conquest.",
-"Don’t expect to like him at the beginning, or perhaps, ever—",
-"By the end, his trials and tribulations have clearly made him a better person",
-"Still, I rather enjoyed knowing from the outset that he is to be devoured by the jungle",
-"this is the bulk of The Vortex",
-"...the young elite man of letters",
-"contains sensational denunciations of conditions suffered",
-"Colombian rubber tappers in Brazil and Peru",
-"has vanished forever in the rainforest",
-"well-defined Latin American social type",
-"a life of bohemian leisure in the capital city, Bogotá",
-"markedly an urban person",
-"a serial seducer",
-"“deflowerer” of girls",
-"playing around",
-"gain government employment",
-"requiring little actual labor",
-"perhaps invest in a profitable business venture",
-"contribute to the modernization of [your] country",
-"meantime, he basks in the modest prestige",
-"his slender volume of poetry",
-"An interest in poetry",
-"students of his generation",
-"Literary pretentions proliferated",
-"elite males with the wit for it",
-"Mastery of literary language",
-"a key aspect of their prestige",
-"elite males “inscribed” the Latin American countryside",
-"writing it into national life",
-"appropriating it for their own, urban purposes",
-"one of the most famous Latin American novels of the twentieth century",
-"regions remote",
-"sophisticated capital cities",
-"Across the hemisphere",
-"culminated a century-long process of literary nation building",
-"in the 1970s, The Vortex was its fourth title, of more than a hundred",
-"lurid depictions of the “jungle”",
-"wide appeal",
-"action-packed plot",
-"the sensational human rights abuses",
-"highly relevant",
-"early twentieth-century rubber boom in Amazonia as a whole",
-"the rubber boom",
-"a government commission tasked to clarify the Venezuelan-Colombian border",
-"Rivera’s brush with the rainforest was thus limited but real",
-"English translations of Latin American fiction were incalculably rare",
-"He died suddenly",
-"while on a visit to New York",
-"arranging for the English translation",
-"a well-received book of poetry",
-"he inspired to infuse his prose",
-"a poetic language and sensibility",
-"Early drafts",
-"Rivera loved rarefied vocabulary",
-"1970s, I found the novel very heavy going",
-"It sent me to the dictionary",
-"g[i]ve new meaning to the word “florid”",
-"a conventional chapter structure",
-"preserve more of the unconventional edginess",
-"the naturalness of his dialogue",
-"dialing back the floridness of his purple patches",
-"the novel’s mood, attitude, action, description, and characterization",
-"has been re-created in full",
-"Nothing else will do",
-"every detail matters",
-"Try to skim it",
-"you will lose the plot"
+  //"Placing a Palm Over His Chest",
+  "Feeling the Soft Earth Receiving My Inadequate Footwear",
+  "Relax and Touch the Limitless Space of the Human Heart",
+  "O I see life is not short, but immeasurably long.",
+  "Lead with Affirmations, Not Apologies or Disclaimers",
+  //"Don't Minimize Your Concerns",
+  "A Body Rises, Reaches an Apex, and then Falls",
+  "The Judge and the Victim Control Our Mind",
+  //"The Change Will be Very Significant",
+  "Fear Destroys Curiosity and Playfulness"
 ];
 
     /* These are the Header Replacements */
@@ -226,14 +169,14 @@ const REMINDERS = [
     find: "urgent",
     reminders: [
       "· Placing a Palm Over His Chest",
-      "· Don’t Minimize Your Concerns",
+      "· Don't Minimize Your Concerns",
       "· The Change Will be Very Significant"
     ]
   },
   {
     find: "anxiety",
     reminders: [
-   //   "· Don’t Minimize Your Concerns",
+   //   "· Don't Minimize Your Concerns",
       "· Relax and Touch the Limitless Space of the Human Heart",
       "· Fear Destroys Curiosity and Playfulness"
     ]
@@ -251,7 +194,7 @@ const REMINDERS = [
     reminders: [
       "· The Judge and the Victim Control Our Mind",
       "· The Change Will be Very Significant",
-      "· You’ve Been Onto Something"
+      "· You've Been Onto Something"
     ]
   },
   {
@@ -279,21 +222,21 @@ const REMINDERS = [
     find: "customer",
     reminders: [
       "· Fear Destroys Curiosity and Playfulness",
-      "· Don’t Minimize Your Concerns"
+      "· Don't Minimize Your Concerns"
     ]
   },
   {
     find: "reviews",
     reminders: [
       "· The Judge and the Victim Control Our Mind",
-      "· Don’t Minimize Your Concerns"
+      "· Don't Minimize Your Concerns"
     ]
   },
   {
     find: "ratings",
     reminders: [
       "· The Judge and the Victim Control Our Mind",
-      "· Don’t Minimize Your Concerns"
+      "· Don't Minimize Your Concerns"
     ]
   },
   {
@@ -306,7 +249,7 @@ const REMINDERS = [
     find: "buy now",
     reminders: [
       "· The Change Will be Very Significant",
-      "· Don’t Minimize Your Concerns"
+      "· Don't Minimize Your Concerns"
     ]
   },
   {
@@ -319,13 +262,13 @@ const REMINDERS = [
     find: "save",
     reminders: [
       "· Relax and Touch the Limitless Space of the Human Heart",
-      "· Don’t Minimize Your Concerns"
+      "· Don't Minimize Your Concerns"
     ]
   },
   {
     find: "limited",
     reminders: [
-      "· Don’t Minimize Your Concerns",
+      "· Don't Minimize Your Concerns",
       "· The Change Will be Very Significant"
     ]
   }
@@ -371,6 +314,24 @@ const wrProcessed = new WeakSet();
 
 
 // ============================================================
+// REPLACE LOGOS
+// ============================================================
+
+function replaceLogos(root) {
+  const logos = root.querySelectorAll?.("#nav-logo-sprites, .nav-logo, [data-cel-widget='nav-logo'], img[src*='logo']");
+  logos.forEach(logo => {
+    if (logo.dataset.logoReplaced) return;
+    logo.dataset.logoReplaced = "true";
+    logo.style.cssText = "font-family: 'Amazon Ember', sans-serif !important; color: #26b813 !important; font-size: 1.5rem !important; font-style: strong !important; white-space: nowrap; display: inline-block; line-height: 1;";
+    logo.textContent = "the amazon";
+    if (logo.tagName === "IMG") {
+      logo.removeAttribute("src");
+      logo.alt = "The Amazon";
+    }
+  });
+}
+
+// ============================================================
 // PROCESS HEADINGS
 // ============================================================
 
@@ -379,7 +340,7 @@ function hsNextReplacement() {
 
   if (HS_SKIP_ENABLED && hsSkipCount > 0) {
     hsSkipCount--;
-    return null;
+    return null;  
   }
 
   if (hsPool.length === 0) {
@@ -419,13 +380,43 @@ function processHeadings(root) {
 
 
 // ============================================================
+// AGGRESSIVE PERCENTAGE REPLACER (AMAZON BADGES)
+// ============================================================
+// Amazon uses React, which can rapidly overwrite our text changes.
+// This function aggressively targets just the percentage strings.
+
+function fixAmazonPercentages(root) {
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+
+  let node;
+  while ((node = walker.nextNode())) {
+    if (node.nodeValue) {
+      // Looks for:
+      // (^|[^\d]) -> Start of string OR any non-digit character
+      // (\d{1,2}) -> Exactly 1 or 2 digits (e.g. 17, 5, 99)
+      // (\s*%)    -> Optional spaces and then a % sign
+      if (/(^|[^\d])(\d{1,2})(\s*%)/.test(node.nodeValue)) {
+        node.nodeValue = node.nodeValue.replace(/(^|[^\d])(\d{1,2})(\s*%)/g, (match, p1, p2, p3) => {
+          return p1 + "1" + p2 + p3;
+        });
+      }
+    }
+  }
+}
+
+
+// ============================================================
 // PROCESS INDIVIDUAL WORDS
 // ============================================================
 
 const RW_SKIP_TAGS = new Set([
   "SCRIPT","STYLE","NOSCRIPT","TEXTAREA","INPUT",
-  "SELECT", "BUTTON","CODE","PRE","HEAD","META","TITLE"
-]);     // Can experiment with commenting out 'button'
+  "SELECT", "CODE","PRE","HEAD","META","TITLE"
+]);
 
 const COMPILED_REMINDERS = REMINDERS.map(entry => ({
   ...entry,
@@ -469,12 +460,15 @@ function wrNextReminder(entry) {
 
 function processTextNode(textNode) {
   if (!RW_ENABLED) return;
-  if (wrProcessed.has(textNode)) return;
 
   const parent = textNode.parentNode;
   if (!parent) return;
 
   if (RW_SKIP_TAGS.has(parent.tagName)) return;
+
+  if (wrProcessed.has(textNode)) return;
+
+  // Skip the poetic phrase insertions if we are inside a link
   if (parent.closest && parent.closest("a")) return;
 
   wrProcessed.add(textNode);
@@ -584,32 +578,53 @@ function run(root) {
   injectFont();
   injectRoleStyles();
 
+  replaceLogos(root);
   processLinks(root);
   processHeadings(root);
+  fixAmazonPercentages(root);
   processTextNodes(root);
 }
 
 run(document.body);
+
 // ============================================================
-// MUTATION OBSERVER
+// MUTATION OBSERVER (CATCHES AMAZON LAZY-LOADED DEALS)
 // ============================================================
 
 const observer = new MutationObserver((mutations) => {
+  // Disconnect briefly to stop infinite loops while we change the DOM
   observer.disconnect();
 
   for (const mutation of mutations) {
-    for (const added of mutation.addedNodes) {
-      if (added.nodeType === Node.ELEMENT_NODE) {
-        processLinks(added);
-        processHeadings(added);
-        processTextNodes(added);
-      } else if (added.nodeType === Node.TEXT_NODE) {
-        processTextNode(added);
+    // If Amazon directly changes the text inside an existing node
+    if (mutation.type === 'characterData') {
+      fixAmazonPercentages(mutation.target.parentNode || document.body);
+      processTextNode(mutation.target);
+    } 
+    // If Amazon adds entirely new deal boxes
+    else if (mutation.type === 'childList') {
+      for (const added of mutation.addedNodes) {
+        if (added.nodeType === Node.ELEMENT_NODE) {
+          processLinks(added);
+          replaceLogos(added);
+          processHeadings(added);
+          fixAmazonPercentages(added);
+          processTextNodes(added);
+        } else if (added.nodeType === Node.TEXT_NODE) {
+          fixAmazonPercentages(added.parentNode || document.body);
+          processTextNode(added);
+        }
       }
     }
   }
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  // Re-observe
+  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 });
 
-observer.observe(document.body, { childList: true, subtree: true });
+observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+// FORCE RUN EVERY 1 SECOND (To guarantee we beat Amazon's React engine)
+setInterval(() => {
+  fixAmazonPercentages(document.body);
+}, 1000);
