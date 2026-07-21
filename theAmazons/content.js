@@ -1,15 +1,15 @@
 // ============================================================
-//  theAmazons v2.1
+//  theAmazons v2.2
 //
 //  Reads & replaces H1, H2, H3, and H4 on page at variable frequency
 //  Reads & replaces targeted words on page at variable frequency
 //    
+//  07.14.2026  add RW_MODE toggle for append vs replace keyword (ks)
 //  06.23.2026  add logo replacement and percentage fix (ha)
 //  06.26.2026  fix logic for styling and link preservation (ks)
 //  05.26.2026  fix mutation loop lockup (ks)
 //  05.26.2026  combine header replacement + individual word replacement (ks)
 //  05.26.2026  add replacements text (xb)
-//
 //
 // ============================================================
 
@@ -69,7 +69,6 @@ function injectFont() {
     "https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap";
   document.head.appendChild(link);
 }
-
 
 // ============================================================
 // ROLE STYLE HANDLER
@@ -181,7 +180,7 @@ const REPLACEMENTS = [
 "has been re-created in full"
 ];
 
-    /* These are the Header Replacements */
+    /* These are the Reminder Replacements */
 
 const REMINDERS = [
   {
@@ -327,6 +326,8 @@ const RW_SKIP_ENABLED = false; // Control Frequency?
 const RW_MAX_SKIPS = 3;       // Higher = less frequent
 const RW_NO_REPEATS = false;   // Don't Repeat Phrases
 
+const RW_MODE = "append";     // "append"  = keep the matched keyword + add reminder
+                               // "replace" = delete the matched keyword + reminder stands in its place
 
 // ============================================================
 // STATE
@@ -544,15 +545,25 @@ function processTextNode(textNode) {
       );
     }
 
-    fragment.appendChild(document.createTextNode(earliest[0]));
-
     const reminder = wrNextReminder(earliestEntry);
 
-    if (reminder) {
+    if (RW_MODE === "replace" && reminder) {
+      // swap the matched keyword out for the reminder
       const span = document.createElement("span");
       span.className = "role-reminder";
       span.textContent = reminder;
       fragment.appendChild(span);
+    } else {
+      // default "append" behavior
+      fragment.appendChild(document.createTextNode(earliest[0]));
+
+      // keep word fallback for "replace" mode when skip-logic returns no reminder
+      if (reminder && RW_MODE !== "replace") {
+        const span = document.createElement("span");
+        span.className = "role-reminder";
+        span.textContent = reminder;
+        fragment.appendChild(span);
+      }
     }
 
     remaining = remaining.slice(
@@ -662,7 +673,7 @@ const observer = new MutationObserver((mutations) => {
 
 observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 
-// FORCE RUN EVERY 1 SECOND (To guarantee we beat Amazon's React engine)
+// FORCE RUN EVERY 1 SECOND
 setInterval(() => {
   fixAmazonPercentages(document.body);
 }, 1000);
