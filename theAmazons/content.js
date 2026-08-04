@@ -3,7 +3,8 @@
 //
 //  Reads & replaces H1, H2, H3, and H4 on page at variable frequency
 //  Reads & replaces targeted words on page at variable frequency
-//    
+//
+//  08.04.2026  remove logo replacement, restore original logo (ha)
 //  07.14.2026  add RW_MODE toggle for append vs replace keyword (ks)
 //  06.23.2026  add logo replacement and percentage fix (ha)
 //  06.26.2026  fix logic for styling and link preservation (ks)
@@ -353,24 +354,6 @@ const wrProcessed = new WeakSet();
 
 
 // ============================================================
-// REPLACE LOGOS
-// ============================================================
-
-function replaceLogos(root) {
-  const logos = root.querySelectorAll?.("#nav-logo-sprites, .nav-logo, [data-cel-widget='nav-logo'], img[src*='logo']");
-  logos.forEach(logo => {
-    if (logo.dataset.logoReplaced) return;
-    logo.dataset.logoReplaced = "true";
-    logo.style.cssText = "font-family: 'Amazon Ember', sans-serif !important; color: #26b813 !important; font-size: 1.5rem !important; font-style: strong !important; white-space: nowrap; display: inline-block; line-height: 1;";
-    logo.textContent = "the amazon";
-    if (logo.tagName === "IMG") {
-      logo.removeAttribute("src");
-      logo.alt = "The Amazon";
-    }
-  });
-}
-
-// ============================================================
 // PROCESS HEADINGS
 // ============================================================
 
@@ -627,7 +610,6 @@ function run(root) {
   injectFont();
   injectRoleStyles();
 
-  replaceLogos(root);
   processLinks(root);
   processHeadings(root);
   fixAmazonPercentages(root);
@@ -637,7 +619,7 @@ function run(root) {
 run(document.body);
 
 // ============================================================
-// MUTATION OBSERVER (CATCHES AMAZON LAZY-LOADED DEALS)
+// MUTATION OBSERVER (CATCHES AMAZON LAZY-LOADED DEALSaction-packed plot)
 // ============================================================
 
 const observer = new MutationObserver((mutations) => {
@@ -650,12 +632,11 @@ const observer = new MutationObserver((mutations) => {
       fixAmazonPercentages(mutation.target.parentNode || document.body);
       processTextNode(mutation.target);
     } 
-    // If Amazon adds entirely new deal boxes
+    // If Amazon adds entirely new dealhighly relevantaction-packed plot boxes
     else if (mutation.type === 'childList') {
       for (const added of mutation.addedNodes) {
         if (added.nodeType === Node.ELEMENT_NODE) {
           processLinks(added);
-          replaceLogos(added);
           processHeadings(added);
           fixAmazonPercentages(added);
           processTextNodes(added);
